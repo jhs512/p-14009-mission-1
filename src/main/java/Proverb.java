@@ -1,19 +1,26 @@
+import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Proverb {
 
+  private static final ProverbManager proverbManager = new ProverbManager();
+
   public static void main(String[] args) {
     System.out.println("== 명언 앱 ==");
     Scanner scanner = new Scanner(System.in);
 
-    int provCnt = 0;
-    List<String> provList = new ArrayList<>();
-    provList.add("");
-    List<String> authorList = new ArrayList<>();
-    authorList.add("");
+    List<WiseSaying> wiseSayingList;
+    try {
+      wiseSayingList = proverbManager.fetchProverbs();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
     TreeSet<Integer> listCheckSet = new TreeSet<>();
+    for (int i = 1; i <= wiseSayingList.size() - 1; i++) {
+      listCheckSet.add(wiseSayingList.get(i).id);
+    }
 
     label:
     while (true) {
@@ -29,24 +36,36 @@ public class Proverb {
 
         // 2~4단계
         case "등록":
-          provCnt = makeProv(provCnt, provList, authorList, listCheckSet, scanner);
+          try {
+            wiseSayingList.add(makeProv(proverbManager.getNextId(), listCheckSet, scanner));
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
           break;
 
         // 5단계
         case "목록":
-          getAllProv(provList, authorList, listCheckSet);
+          getAllProv(wiseSayingList);
           break;
 
         // 6,7단계
         case "삭제":
           int removeId = Integer.parseInt(cmd.split("=")[1]);
-          deleteProv(removeId, provList, authorList, listCheckSet);
+          try {
+            deleteProv(removeId, wiseSayingList, listCheckSet);
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
           break;
 
         // 8단계
         case "수정":
           int modifyId = Integer.parseInt(cmd.split("=")[1]);
-          modifyProv(modifyId, provList, authorList, listCheckSet, scanner);
+          try {
+            modifyProv(modifyId, wiseSayingList, listCheckSet, scanner);
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
           break;
       }
     }
@@ -54,28 +73,22 @@ public class Proverb {
     scanner.close();
   }
 
-  private static int makeProv(
-      int provCnt,
-      List<String> provList,
-      List<String> authorList,
-      Set<Integer> listCheckSet,
-      Scanner scanner
-  ) {
+  private static WiseSaying makeProv(int registerId, Set<Integer> listCheckSet, Scanner scanner)
+      throws IOException {
     while (true) {
       System.out.print("명언 : ");
-      String author = scanner.nextLine().trim();
-      if (containsSpecificChar(author)) {
-        provList.add(author);
+      String proverb = scanner.nextLine().trim();
 
+      if (containsSpecificChar(proverb)) {
         while (true) {
           System.out.print("작가 : ");
-          author = scanner.nextLine().trim();
+          String author = scanner.nextLine().trim();
+
           if (containsSpecificChar(author)) {
-            authorList.add(author);
-            int curProvCnt = provCnt + 1;
-            listCheckSet.add(curProvCnt);
-            System.out.println(curProvCnt + "번 명언이 등록되었습니다.");
-            return curProvCnt;
+            listCheckSet.add(registerId);
+            proverbManager.saveProverb(registerId, proverb, author);
+            System.out.println(registerId + "번 명언이 등록되었습니다.");
+            return new WiseSaying(registerId, proverb, author);
           }
 
           System.out.println("작가에 특수문자를 제외하고 입력해주세요.");
@@ -86,29 +99,30 @@ public class Proverb {
     }
   }
 
-  private static void getAllProv(
-      List<String> provList,
-      List<String> authorList,
-      TreeSet<Integer> listCheckSet
-  ) {
+  private static void getAllProv(List<WiseSaying> wiseSayingList) {
     System.out.println("번호 / 작가 / 명언");
     System.out.println("----------------");
 
-    for (int idx : listCheckSet) {
-      System.out.println(idx + " / " + authorList.get(idx) + " / " + provList.get(idx));
+    for (int idx = wiseSayingList.size() - 1; idx >= 1; idx--) {
+      System.out.println(wiseSayingList.get(idx).id + " / "
+          + wiseSayingList.get(idx).author + " / " + wiseSayingList.get(idx).content);
     }
   }
 
   private static void deleteProv(
       int removeId,
-      List<String> provList,
-      List<String> authorList,
+      List<WiseSaying> wiseSayingList,
       TreeSet<Integer> listCheckSet
-  ) {
+  ) throws IOException {
     if (listCheckSet.contains(removeId)) {
-      provList.set(removeId, "");
-      authorList.set(removeId, "");
+      for (int i = 1; i <= wiseSayingList.size() - 1; i++) {
+        if (wiseSayingList.get(i).id == removeId) {
+          wiseSayingList.remove(wiseSayingList.get(i));
+        }
+      }
+
       listCheckSet.remove(removeId);
+      proverbManager.deleteProverb(removeId);
       System.out.println(removeId + "번 명언이 삭제되었습니다.");
     } else {
       System.out.println(removeId + "번 명언은 존재하지 않습니다.");
@@ -117,26 +131,39 @@ public class Proverb {
 
   private static void modifyProv(
       int modifyId,
-      List<String> provList,
-      List<String> authorList,
+      List<WiseSaying> wiseSayingList,
       TreeSet<Integer> listCheckSet,
       Scanner scanner
-  ) {
+  ) throws IOException {
     if (listCheckSet.contains(modifyId)) {
-      System.out.println("명언(기존) : " + provList.get(modifyId));
+      int wiseSayingListIdx = 0;
+      for (int i = 1; i <= wiseSayingList.size() - 1; i++) {
+        if (wiseSayingList.get(i).id == modifyId) {
+          wiseSayingListIdx = i;
+          break;
+        }
+      }
+
+      System.out.println("명언(기존) : " + wiseSayingList.get(wiseSayingListIdx).content);
+      WiseSaying newWiseSaying = new WiseSaying();
+      newWiseSaying.id = modifyId;
 
       while (true) {
         System.out.print("명언 : ");
-        String newAuthor = scanner.nextLine().trim();
-        if (containsSpecificChar(newAuthor)) {
-          provList.set(modifyId, newAuthor);
-          System.out.println("작가(기존) : " + authorList.get(modifyId));
+        String newProverb = scanner.nextLine().trim();
+
+        if (containsSpecificChar(newProverb)) {
+          newWiseSaying.content = newProverb;
+          System.out.println("작가(기존) : " + wiseSayingList.get(wiseSayingListIdx).author);
 
           while (true) {
             System.out.print("작가 : ");
-            newAuthor = scanner.nextLine().trim();
+            String newAuthor = scanner.nextLine().trim();
+
             if (containsSpecificChar(newAuthor)) {
-              authorList.set(modifyId, newAuthor);
+              newWiseSaying.author = newAuthor;
+              proverbManager.saveProverb(modifyId, newProverb, newAuthor);
+              wiseSayingList.set(wiseSayingListIdx, newWiseSaying);
               return;
             }
 
