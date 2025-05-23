@@ -1,1 +1,2 @@
-# 8단계까지 완료 후 FORK, PR 제출 해주세요.
+# Wise_Saying
+Java 명언 앱
