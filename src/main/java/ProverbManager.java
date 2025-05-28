@@ -80,6 +80,39 @@ public class ProverbManager {
     }
   }
 
+  public void makeWiseSayingFile() throws IOException {
+    Files.createDirectories(Paths.get(WISE_SAYING_DIR));
+
+    StringBuilder wiseSayingListString = new StringBuilder();
+    boolean isFirstFile = true;
+    wiseSayingListString.append("[\n  ");
+    for (int i = 1; i < getNextId(); i++) {
+      Path wiseSayingJsonFilePath = Paths.get(WISE_SAYING_DIR + i + ".json");
+      if (Files.exists(wiseSayingJsonFilePath)) {
+        String wiseSayingJsonFile = Files.readString(wiseSayingJsonFilePath);
+        String indentedWiseSayingJsonFile = wiseSayingJsonFile.replaceAll("\n", "\n  ");
+
+        if (isFirstFile) {
+          isFirstFile = false;
+        } else {
+          wiseSayingListString.append(",\n  ");
+        }
+
+        wiseSayingListString.append(indentedWiseSayingJsonFile);
+      }
+    }
+
+    wiseSayingListString.append("\n]");
+
+    if (isFirstFile) {
+      wiseSayingListString.setLength(0);
+      wiseSayingListString.append("[]");
+    }
+
+    Files.writeString(Paths.get(WISE_SAYING_DIR + "data.json"), wiseSayingListString,
+        StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+  }
+
   private String createJson(int id, String content, String author) {
     String template = """
         '{'

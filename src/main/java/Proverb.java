@@ -67,6 +67,16 @@ public class Proverb {
             throw new RuntimeException(e);
           }
           break;
+
+        // 10단계
+        case "빌드":
+          try {
+            proverbManager.makeWiseSayingFile();
+            System.out.println("data.json 파일의 내용이 갱신되었습니다.");
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
+          break;
       }
     }
 
