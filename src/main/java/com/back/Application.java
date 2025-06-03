@@ -11,5 +11,7 @@ public class Application {
         WiseSayingController wiseSayingController = new WiseSayingController(
                     new InputView(), new OutputView(), new WiseSayingService(), new WiseSayingRepository()
         );
+
+        wiseSayingController.run();
     }
 }

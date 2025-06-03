@@ -5,6 +5,10 @@ import java.util.List;
 
 public class OutputView {
 
+    public void printStartWiseSayingApp() {
+        System.out.println("== 명언 앱 ==");
+    }
+
     public void printWiseSayingById(Long id) {
         System.out.println(id + "번 명언이 등록되었습니다.");
     }

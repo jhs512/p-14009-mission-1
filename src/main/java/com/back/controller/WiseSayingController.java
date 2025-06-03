@@ -30,6 +30,7 @@ public class WiseSayingController {
 
     public void run() {
         while (true) {
+
             String[] command = InputParser.parseInput(inputView.readCommand());// 이거 utils - parser에서 가공
             // 명령어 예외처리
             // 1. Command에 없는 명령어인 경우

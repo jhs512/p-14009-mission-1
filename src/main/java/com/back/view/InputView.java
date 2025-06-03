@@ -7,6 +7,7 @@ public class InputView {
     private final Scanner scanner = new Scanner(System.in);
 
     public String readCommand() {
+        System.out.print("명령) ");
         return scanner.nextLine().trim();
     }
 
