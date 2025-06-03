@@ -19,14 +19,4 @@ public class InputView {
         System.out.print("작가 : ");
         return scanner.nextLine().trim();
     }
-
-    public String readChangeContent() {
-        System.out.print("명언(기존) : ");
-        return scanner.nextLine().trim();
-    }
-
-    public String readChangeAuthor() {
-        System.out.print("작가(기존) : ");
-        return scanner.nextLine().trim();
-    }
 }
