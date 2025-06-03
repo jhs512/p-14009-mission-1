@@ -20,8 +20,9 @@ public class OutputView {
     public void printAllWiseSayings(List<WiseSaying> wiseSayings) {
         System.out.println("번호 / 작가 / 명언");
         System.out.println("----------------------");
-        for (WiseSaying wiseSaying : wiseSayings) {
-            System.out.printf("%d / %s / %s%n", wiseSaying.getId(), wiseSaying.getAuthor(), wiseSaying.getContent());
+        for (int i = wiseSayings.size() - 1; i >= 0; i--) {
+            System.out.printf("%d / %s / %s%n",
+                    wiseSayings.get(i).getId(), wiseSayings.get(i).getAuthor(), wiseSayings.get(i).getContent());
         }
     }
 

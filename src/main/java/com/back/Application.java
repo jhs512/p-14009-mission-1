@@ -1,7 +1,14 @@
 package com.back;
 
+import com.back.controller.WiseSayingController;
+import com.back.service.WiseSayingService;
+import com.back.view.InputView;
+import com.back.view.OutputView;
+
 public class Application {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        WiseSayingController wiseSayingController = new WiseSayingController(
+                    new InputView(), new OutputView(), new WiseSayingService()
+        );
     }
 }
