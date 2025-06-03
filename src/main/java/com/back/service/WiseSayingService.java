@@ -10,6 +10,13 @@ public class WiseSayingService {
     }
 
     public void changeWiseSaying(WiseSaying oldWiseSaying, String newContent, String newAuthor) {
+        oldWiseSaying.setContent(newContent);
+        oldWiseSaying.setAuthor(newAuthor);
+    }
 
+    public void deleteWiseSaying(List<WiseSaying> wiseSayings, WiseSaying wiseSaying) {
+        if (wiseSayings.contains(wiseSaying)) {
+            wiseSayings.remove(wiseSaying);
+        }
     }
 }

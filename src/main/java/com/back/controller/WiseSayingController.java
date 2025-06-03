@@ -2,6 +2,7 @@ package com.back.controller;
 
 import com.back.domain.WiseSaying;
 import com.back.enums.Command;
+import com.back.repository.WiseSayingRepository;
 import com.back.service.WiseSayingService;
 import com.back.view.InputView;
 import com.back.view.OutputView;
@@ -13,14 +14,16 @@ public class WiseSayingController {
     private final InputView inputView;
     private final OutputView outputView;
     private final WiseSayingService wiseSayingService;
+    private final WiseSayingRepository wiseSayingRepository;
 
     private List<WiseSaying> wiseSayings = new ArrayList<>();
     private Long indexID = 0L;
 
-    public WiseSayingController(InputView inputView, OutputView outputView, WiseSayingService wiseSayingService) {
+    public WiseSayingController(InputView inputView, OutputView outputView, WiseSayingService wiseSayingService, WiseSayingRepository wiseSayingRepository) {
         this.inputView = inputView;
         this.outputView = outputView;
         this.wiseSayingService = wiseSayingService;
+        this.wiseSayingRepository = wiseSayingRepository;
     }
 
     public void run() {
@@ -42,7 +45,7 @@ public class WiseSayingController {
                 outputView.printAllWiseSayings(wiseSayings);
             }
             if (command.equals(Command.수정.name())) {
-                WiseSaying oldWiseSaying = getWiseSayingById(Long.parseLong(command[1]));
+                WiseSaying oldWiseSaying = wiseSayingRepository.getWiseSayingById(wiseSayings, Long.parseLong(command[1]));
                 outputView.printOldContent(oldWiseSaying);
                 String newContent = inputView.readNewContent();
                 outputView.printOldAuthor(oldWiseSaying);
@@ -51,15 +54,10 @@ public class WiseSayingController {
 
             }
             if (command.equals(Command.삭제.name())) {
+                wiseSayingService.deleteWiseSaying(wiseSayings, wiseSayingRepository.getWiseSayingById(wiseSayings, Long.parseLong(command[1])));
                 outputView.printDeleteWiseSayingById(Long.parseLong(command[1]));
             }
         }
     }
 
-    public WiseSaying getWiseSayingById(Long id) {
-        return wiseSayings.stream()
-                .filter(wiseSaying -> wiseSaying.getId().equals(id))
-                .findFirst()
-                .orElse(null);
-    }
 }
