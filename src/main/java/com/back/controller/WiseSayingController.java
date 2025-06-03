@@ -4,6 +4,8 @@ import com.back.domain.WiseSaying;
 import com.back.enums.Command;
 import com.back.repository.WiseSayingRepository;
 import com.back.service.WiseSayingService;
+import com.back.utils.InputParser;
+import com.back.utils.Validator;
 import com.back.view.InputView;
 import com.back.view.OutputView;
 import java.util.ArrayList;
@@ -28,10 +30,18 @@ public class WiseSayingController {
 
     public void run() {
         while (true) {
-            String[] command = {"1", "2"};// 이거 utils - parser에서 가공
+            String[] command = InputParser.parseInput(inputView.readCommand());// 이거 utils - parser에서 가공
             // 명령어 예외처리
-                // 1. Command에 없는 명령어인 경우
-                // 2. 삭제 및 수정에서, 존재하지 않는 ID를 입력한 경우
+            // 1. Command에 없는 명령어인 경우
+            if (!Validator.isValidCommand(command)) {
+                outputView.printInvalidCommand();
+                continue;
+            }
+            // 2. 삭제 및 수정에서, 존재하지 않는 ID를 입력한 경우
+            if (!Validator.isValidIdInWiseSayings(command, wiseSayings)) {
+                outputView.printWiseSayingDoesNotExist(Long.parseLong(command[1]));
+                continue;
+            }
             if (command.equals(Command.종료.name())) {
                 break;
             }

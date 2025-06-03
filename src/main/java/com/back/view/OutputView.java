@@ -33,4 +33,8 @@ public class OutputView {
     public void printOldAuthor(WiseSaying wiseSaying) {
         System.out.print("작가(기존) : " + wiseSaying.getAuthor());
     }
+
+    public void printInvalidCommand() {
+        System.out.println("잘못된 명령어입니다. 다시 입력해주세요.");
+    }
 }
