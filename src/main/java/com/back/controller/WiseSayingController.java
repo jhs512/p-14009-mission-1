@@ -30,7 +30,7 @@ public class WiseSayingController {
 
     public void run() {
         while (true) {
-
+            outputView.printStartWiseSayingApp();
             String[] command = InputParser.parseInput(inputView.readCommand());// 이거 utils - parser에서 가공
             // 명령어 예외처리
             // 1. Command에 없는 명령어인 경우
@@ -39,23 +39,23 @@ public class WiseSayingController {
                 continue;
             }
             // 2. 삭제 및 수정에서, 존재하지 않는 ID를 입력한 경우
-            if (!Validator.isValidIdInWiseSayings(command, wiseSayings)) {
+            if (command[0].matches("^(삭제|수정)$") && !Validator.isValidIdInWiseSayings(command, wiseSayings)) {
                 outputView.printWiseSayingDoesNotExist(Long.parseLong(command[1]));
                 continue;
             }
-            if (command.equals(Command.종료.name())) {
+            if (command[0].equals(Command.종료.getCommand())) {
                 break;
             }
-            if (command.equals(Command.등록.name())) {
+            if (command[0].equals(Command.등록.getCommand())) {
                 String content = inputView.readNewContent();
                 String author = inputView.readNewAuthor();
                 wiseSayingService.addWiseSaying(wiseSayings, new WiseSaying(++indexID, content, author));
                 outputView.printWiseSayingById(indexID);
             }
-            if (command.equals(Command.목록.name())) {
+            if (command[0].equals(Command.목록.getCommand())) {
                 outputView.printAllWiseSayings(wiseSayings);
             }
-            if (command.equals(Command.수정.name())) {
+            if (command[0].equals(Command.수정.getCommand())) {
                 WiseSaying oldWiseSaying = wiseSayingRepository.getWiseSayingById(wiseSayings, Long.parseLong(command[1]));
                 outputView.printOldContent(oldWiseSaying);
                 String newContent = inputView.readNewContent();
@@ -64,10 +64,12 @@ public class WiseSayingController {
                 wiseSayingService.changeWiseSaying(oldWiseSaying, newContent, newAuthor);
 
             }
-            if (command.equals(Command.삭제.name())) {
+            if (command[0].equals(Command.삭제.getCommand())) {
                 wiseSayingService.deleteWiseSaying(wiseSayings, wiseSayingRepository.getWiseSayingById(wiseSayings, Long.parseLong(command[1])));
                 outputView.printDeleteWiseSayingById(Long.parseLong(command[1]));
             }
+
+
         }
     }
 

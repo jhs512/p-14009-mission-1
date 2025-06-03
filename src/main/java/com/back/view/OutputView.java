@@ -31,11 +31,11 @@ public class OutputView {
     }
 
     public void printOldContent(WiseSaying wiseSaying) {
-        System.out.print("명언(기존) : " + wiseSaying.getContent());
+        System.out.println("명언(기존) : " + wiseSaying.getContent());
     }
 
     public void printOldAuthor(WiseSaying wiseSaying) {
-        System.out.print("작가(기존) : " + wiseSaying.getAuthor());
+        System.out.println("작가(기존) : " + wiseSaying.getAuthor());
     }
 
     public void printInvalidCommand() {

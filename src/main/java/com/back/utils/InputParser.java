@@ -6,6 +6,6 @@ public class InputParser {
         if (input == null || input.trim().isEmpty()) {
             return null;
         }
-        return input.split("=?");
+        return input.split("=\\?");
     }
 }

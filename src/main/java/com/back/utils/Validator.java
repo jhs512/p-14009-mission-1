@@ -11,7 +11,9 @@ public class Validator {
         }
 
         try {
-            Long validId = Long.parseLong(parseInput[1]);
+            if (parseInput.length > 1) {
+                Long validId = Long.parseLong(parseInput[1]);
+            }
         } catch (NumberFormatException e) {
             return false;
         }
@@ -20,7 +22,7 @@ public class Validator {
     }
 
     public static boolean isValidCommandName(String input) {
-        String[] command = input.split("=?");
+        String[] command = input.split("=\\?");
         if (command[0].matches("^(등록|수정|삭제|목록|종료)$")) {
             return true;
         }
@@ -45,6 +47,7 @@ public class Validator {
             return wiseSayings.stream()
                     .anyMatch(wiseSaying -> wiseSaying.getId().equals(id));
         }
+
         return false;
     }
 
