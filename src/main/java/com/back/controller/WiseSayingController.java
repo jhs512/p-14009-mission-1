@@ -47,30 +47,42 @@ public class WiseSayingController {
                 break;
             }
             if (command[0].equals(Command.등록.getCommand())) {
-                String content = inputView.readNewContent();
-                String author = inputView.readNewAuthor();
-                wiseSayingService.addWiseSaying(wiseSayings, new WiseSaying(++indexID, content, author));
-                outputView.printWiseSayingById(indexID);
+                add();
+                continue;
             }
             if (command[0].equals(Command.목록.getCommand())) {
                 outputView.printAllWiseSayings(wiseSayings);
+                continue;
             }
             if (command[0].equals(Command.수정.getCommand())) {
-                WiseSaying oldWiseSaying = wiseSayingRepository.getWiseSayingById(wiseSayings, Long.parseLong(command[1]));
-                outputView.printOldContent(oldWiseSaying);
-                String newContent = inputView.readNewContent();
-                outputView.printOldAuthor(oldWiseSaying);
-                String newAuthor = inputView.readNewAuthor();
-                wiseSayingService.changeWiseSaying(oldWiseSaying, newContent, newAuthor);
-
+                change(command);
+                continue;
             }
             if (command[0].equals(Command.삭제.getCommand())) {
-                wiseSayingService.deleteWiseSaying(wiseSayings, wiseSayingRepository.getWiseSayingById(wiseSayings, Long.parseLong(command[1])));
-                outputView.printDeleteWiseSayingById(Long.parseLong(command[1]));
+                delete(command);
+                continue;
             }
-
-
         }
     }
 
+    public void add() {
+        String content = inputView.readNewContent();
+        String author = inputView.readNewAuthor();
+        wiseSayingService.addWiseSaying(wiseSayings, new WiseSaying(++indexID, content, author));
+        outputView.printWiseSayingById(indexID);
+    }
+
+    public void change(String[] command) {
+        WiseSaying oldWiseSaying = wiseSayingRepository.getWiseSayingById(wiseSayings, Long.parseLong(command[1]));
+        outputView.printOldContent(oldWiseSaying);
+        String newContent = inputView.readNewContent();
+        outputView.printOldAuthor(oldWiseSaying);
+        String newAuthor = inputView.readNewAuthor();
+        wiseSayingService.changeWiseSaying(oldWiseSaying, newContent, newAuthor);
+    }
+
+    public void delete(String[] command) {
+        wiseSayingService.deleteWiseSaying(wiseSayings, wiseSayingRepository.getWiseSayingById(wiseSayings, Long.parseLong(command[1])));
+        outputView.printDeleteWiseSayingById(Long.parseLong(command[1]));
+    }
 }
