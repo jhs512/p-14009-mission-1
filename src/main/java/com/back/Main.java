@@ -7,7 +7,7 @@ public class Main {
         System.out.println("== 명언 앱 ==");
 
         Scanner scanner=new Scanner(System.in); //사용자입력을 받는 기능을 하는코드
-
+        int lastId =0;
 
         while(true){
             System.out.print("명령) ");
@@ -20,7 +20,9 @@ public class Main {
                 String wiseSayingContent = scanner.nextLine().trim();//변수의 의미
                 System.out.print("작가 : ");
                 String wiseSayingAuthor = scanner.nextLine().trim();
-                System.out.println("1번 명언이 등록되었습니다.");
+                int no = ++lastId;
+                System.out.println("%d번 명언이 등록되었습니다.".formatted(no));
+
             }
 
 
@@ -28,6 +30,7 @@ public class Main {
         scanner.close();
     }
 }
+
 
 
 
