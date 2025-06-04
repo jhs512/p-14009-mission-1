@@ -20,7 +20,7 @@ public class Main {
                 String wiseSayingContent = scanner.nextLine().trim();//변수의 의미
                 System.out.print("작가 : ");
                 String wiseSayingAuthor = scanner.nextLine().trim();
-
+                System.out.println("1번 명언이 등록되었습니다.");
             }
 
 
@@ -28,4 +28,6 @@ public class Main {
         scanner.close();
     }
 }
+
+
 
